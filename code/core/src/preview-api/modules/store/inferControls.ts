@@ -65,8 +65,13 @@ const inferControl = (argType: StrictInputType, name: string, matchers: Controls
     case 'function':
     case 'symbol':
       return null;
-    default:
+    default: {
+      if (Array.isArray((type as SBEnumType).value)) {
+        const { value } = type as SBEnumType;
+        return { control: { type: value?.length <= 5 ? 'radio' : 'select' }, options: value };
+      }
       return { control: { type: options ? 'select' : 'object' } };
+    }
   }
 };
 
